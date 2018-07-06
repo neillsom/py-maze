@@ -3,20 +3,20 @@ import math
 
 wn = turtle.Screen()
 wn.bgcolor('black')
-wn.title('A Maze Game')
-wn.setup(700,700)
+wn.title('Python Maze')
+wn.setup(750,750)
 
 # Register shapes / images
-turtle.register_shape('player2-right.gif')
-turtle.register_shape('player2-left.gif')
-turtle.register_shape('treasure2.gif')
-turtle.register_shape('texture-2.gif')
+turtle.register_shape('./resources/player2-right.gif')
+turtle.register_shape('./resources/player2-left.gif')
+turtle.register_shape('./resources/booty.gif')
+turtle.register_shape('./resources/texture-2.gif')
 
 #Create Pen
 class Pen(turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
-        self.shape('player2-right.gif')
+        self.shape('./resources/player2-right.gif')
         self.color('white')
         self.penup()
         self.speed(0)
@@ -24,11 +24,11 @@ class Pen(turtle.Turtle):
 class Player(turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
-        self.shape('player2-right.gif')
+        self.shape('./resources/player2-right.gif')
         self.color('red')
         self.penup()
         self.speed(0)
-        self.gold = 0
+        self.apple = 0
 
     # Player movements. Lots of repeated code. need to optimize
     def go_up(self):
@@ -49,7 +49,7 @@ class Player(turtle.Turtle):
         move_to_x = self.xcor() - 24
         move_to_y = self.ycor()
 
-        self.shape('player2-left.gif')
+        self.shape('./resources/player2-left.gif')
 
         if (move_to_x, move_to_y) not in walls:
             self.goto(move_to_x, move_to_y)
@@ -58,7 +58,7 @@ class Player(turtle.Turtle):
         move_to_x = self.xcor() + 24
         move_to_y = self.ycor()
 
-        self.shape('player2-right.gif')
+        self.shape('./resources/player2-right.gif')
 
         if (move_to_x, move_to_y) not in walls:
             self.goto(move_to_x, move_to_y)
@@ -77,18 +77,18 @@ class Player(turtle.Turtle):
 
 
 
-class Treasure(turtle.Turtle):
+class Booty(turtle.Turtle):
     def __init__(self, x, y): # screen_x and screen_y
         turtle.Turtle.__init__(self)
-        self.shape('treasure2.gif')
-        self.color('gold')
+        self.shape('./resources/booty.gif')
+        self.color('red')
         self.penup()
         self.speed(0)
-        self.gold = 25
+        self.apple = 25
         self.goto(x, y)
 
     def destroy(self): # not able to actually destroy, just move off screen for now
-        self.goto(2000,2000)
+        self.goto(1000,1000)
         self.hideturtle()
 
 # Create levels list
@@ -127,8 +127,8 @@ level_1 = [
     'XXXXXXXXXXXXXXXXXXXXXX XX'
 ]
 
-# Add a treasures list
-treasures = []
+# Add a bootys list
+bootys = []
 
 # Add maze to mazes list
 levels.append(level_1)
@@ -147,7 +147,7 @@ def create_maze(level):
             # check if it is an x
             if character == 'X':
                 pen.goto(screen_x, screen_y)
-                pen.shape('texture-2.gif')
+                pen.shape('./resources/texture-2.gif')
                 pen.stamp()
                 # add coordinates to wall list
                 walls.append((screen_x, screen_y)) # tuple coordinate pair
@@ -156,7 +156,7 @@ def create_maze(level):
                 player.goto(screen_x, screen_y)
 
             if character == 'O':
-                treasures.append(Treasure(screen_x, screen_y))
+                bootys.append(Booty(screen_x, screen_y))
 
 
 # Create class instances
@@ -169,7 +169,7 @@ walls = []
 create_maze(levels[1])
 # print (walls)
 
-# Keyboard binding
+# Keyboard controls
 turtle.listen()
 turtle.onkey(player.go_left,'Left')
 turtle.onkey(player.go_right,'Right')
@@ -181,12 +181,11 @@ wn.tracer(0)
 
 # Main game loop
 while True:
-    for treasure in treasures: # will run for each treasure
-        if player.is_collision(treasure):
-            player.gold += treasure.gold
-            print ('💰 : {}'.format(player.gold))
-            treasure.destroy()
-            treasures.remove(treasure)
-    # Update screen
+    for booty in bootys: # will run for each booty
+        if player.is_collision(booty):
+            player.apple += booty.apple
+            print ('🍎 : {}'.format(player.apple))
+            booty.destroy()
+            bootys.remove(booty)
+    # Update window
     wn.update()
-    # pass
