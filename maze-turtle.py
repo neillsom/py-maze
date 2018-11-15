@@ -67,7 +67,7 @@ class Player(turtle.Turtle):
     def is_collision(self, other):
         a = self.xcor()-other.xcor()
         b = self.ycor()-other.ycor()
-        # a² + b² + c² to calc distance
+        # a² + b² = c² to calc distance
         playerDis = math.sqrt((a ** 2) + (b ** 2))
 
         if playerDis < 5: # pixels
